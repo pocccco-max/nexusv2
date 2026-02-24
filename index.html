@@ -1,0 +1,1916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
+  <meta name="theme-color" content="#060610">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Nexus AI">
+  <meta name="application-name" content="Nexus AI">
+  <meta name="description" content="AI-powered productivity hub with atom physics timer, sticky notes, and intelligent assistance">
+  <meta name="msapplication-TileColor" content="#060610">
+
+  <!-- Inline SVG favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg width='64' height='64' viewBox='0 0 64 64' fill='none' xmlns='http://www.w3.org/2000/svg'><rect width='64' height='64' rx='12' fill='%23060610'/><path d='M16 32C16 24 20 18 28 18C36 18 40 24 40 32C40 40 36 46 28 46C20 46 16 40 16 32ZM28 32C28 24 32 18 40 18C48 18 52 24 52 32C52 40 48 46 40 46C32 46 28 40 28 32Z' fill='none' stroke='%237c3aed' stroke-width='3'/></svg>" type="image/svg+xml">
+
+  <!-- Apple touch icon (inline PNG via canvas - generated at runtime) -->
+  <link rel="apple-touch-icon" id="apple-touch-icon-link" href="data:image/svg+xml,<svg width='180' height='180' viewBox='0 0 180 180' fill='none' xmlns='http://www.w3.org/2000/svg'><rect width='180' height='180' rx='40' fill='%23060610'/><path d='M45 90C45 68 57 50 78 50C99 50 111 68 111 90C111 112 99 130 78 130C57 130 45 112 45 90ZM78 90C78 68 90 50 111 50C132 50 144 68 144 90C144 112 132 130 111 130C90 130 78 112 78 90Z' fill='none' stroke='%237c3aed' stroke-width='8'/></svg>">
+
+  <!-- Inline Web App Manifest -->
+  <link rel="manifest" id="pwa-manifest">
+
+  <title>Nexus AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300&family=Figtree:wght@300;400;500;600&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="chatbot.css">
+  <link rel="stylesheet" href="hourglass.css">
+
+<style>
+/* ══════════════════════════════════════════════════════════
+   THEME VARIABLES
+══════════════════════════════════════════════════════════ */
+:root {
+  --bg0: #060610;
+  --bg1: #0c0c1e;
+  --bg2: #12122a;
+  --bg3: #1a1a36;
+  --a1: #5b21b6;
+  --a2: #7c3aed;
+  --a3: #a78bfa;
+  --a4: #ddd6fe;
+  --txt0: #f0eeff;
+  --txt1: #8b7fc0;
+  --txt2: #453d70;
+  --bdr: rgba(124,58,237,0.14);
+  --bdr2: rgba(124,58,237,0.38);
+  --glow: rgba(91,33,182,0.25);
+  --glow2: rgba(124,58,237,0.1);
+  --ok: #34d399;
+  --warn: #fbbf24;
+  --err: #f87171;
+  --sidebar: 64px;
+  --nav-icon: rgba(255,255,255,0.55);
+  --nav-icon-hover: rgba(255,255,255,0.92);
+}
+
+/* ── Nav icon visibility: explicit readable color per theme ── */
+:root                  { --nav-icon: rgba(255,255,255,0.55); --nav-icon-hover: rgba(255,255,255,0.92); }
+[data-theme="aurora"]  { --nav-icon: rgba(255,255,255,0.52); --nav-icon-hover: rgba(255,255,255,0.90); }
+[data-theme="crimson"] { --nav-icon: rgba(255,255,255,0.50); --nav-icon-hover: rgba(255,255,255,0.90); }
+[data-theme="solar"]   { --nav-icon: rgba(255,255,255,0.50); --nav-icon-hover: rgba(255,255,255,0.90); }
+[data-theme="neon"]    { --nav-icon: rgba(255,255,255,0.52); --nav-icon-hover: rgba(255,255,255,0.90); }
+[data-theme="rose"]    { --nav-icon: rgba(255,255,255,0.50); --nav-icon-hover: rgba(255,255,255,0.90); }
+[data-theme="obsidian"]{ --nav-icon: rgba(255,255,255,0.55); --nav-icon-hover: rgba(255,255,255,0.95); }
+[data-theme="paper"]   { --nav-icon: rgba(0,0,0,0.52);       --nav-icon-hover: rgba(0,0,0,0.88);       }
+/* new dark themes below */
+[data-theme="midnight"]{ --nav-icon: rgba(255,255,255,0.55); --nav-icon-hover: rgba(255,255,255,0.92); }
+[data-theme="graphite"]{ --nav-icon: rgba(255,255,255,0.55); --nav-icon-hover: rgba(255,255,255,0.92); }
+[data-theme="abyss"]   { --nav-icon: rgba(255,255,255,0.52); --nav-icon-hover: rgba(255,255,255,0.90); }
+
+[data-theme="aurora"] {
+  --bg0:#030e0c;--bg1:#071a16;--bg2:#0e2820;--bg3:#153428;
+  --a1:#0f766e;--a2:#14b8a6;--a3:#5eead4;--a4:#ccfbf1;
+  --txt0:#e0fdf4;--txt1:#4db8a8;--txt2:#1d6058;
+  --bdr:rgba(20,184,166,0.14);--bdr2:rgba(20,184,166,0.38);
+  --glow:rgba(15,118,110,0.25);--glow2:rgba(20,184,166,0.1);
+}
+[data-theme="crimson"] {
+  --bg0:#0c0303;--bg1:#180606;--bg2:#220a0a;--bg3:#2c1010;
+  --a1:#991b1b;--a2:#dc2626;--a3:#f87171;--a4:#fecaca;
+  --txt0:#fff1f2;--txt1:#c05050;--txt2:#5c2020;
+  --bdr:rgba(220,38,38,0.14);--bdr2:rgba(220,38,38,0.38);
+  --glow:rgba(153,27,27,0.25);--glow2:rgba(220,38,38,0.1);
+}
+[data-theme="solar"] {
+  --bg0:#090600;--bg1:#140e00;--bg2:#1e1600;--bg3:#2a2000;
+  --a1:#b45309;--a2:#d97706;--a3:#fbbf24;--a4:#fef3c7;
+  --txt0:#fffbeb;--txt1:#a07820;--txt2:#5c4010;
+  --bdr:rgba(217,119,6,0.14);--bdr2:rgba(217,119,6,0.38);
+  --glow:rgba(180,83,9,0.25);--glow2:rgba(217,119,6,0.1);
+}
+[data-theme="neon"] {
+  --bg0:#020810;--bg1:#040f1e;--bg2:#07172c;--bg3:#0b1f38;
+  --a1:#0369a1;--a2:#0ea5e9;--a3:#38bdf8;--a4:#bae6fd;
+  --txt0:#f0f9ff;--txt1:#3898c8;--txt2:#12486a;
+  --bdr:rgba(14,165,233,0.14);--bdr2:rgba(14,165,233,0.38);
+  --glow:rgba(3,105,161,0.25);--glow2:rgba(14,165,233,0.1);
+}
+[data-theme="rose"] {
+  --bg0:#0a0208;--bg1:#160410;--bg2:#200818;--bg3:#2c0e22;
+  --a1:#9d174d;--a2:#db2777;--a3:#f472b6;--a4:#fce7f3;
+  --txt0:#fdf2f8;--txt1:#b04080;--txt2:#5c1a40;
+  --bdr:rgba(219,39,119,0.14);--bdr2:rgba(219,39,119,0.38);
+  --glow:rgba(157,23,77,0.25);--glow2:rgba(219,39,119,0.1);
+}
+/* Obsidian — pure black with white accents */
+[data-theme="obsidian"] {
+  --bg0:#000000;--bg1:#0a0a0a;--bg2:#111111;--bg3:#1a1a1a;
+  --a1:#333333;--a2:#666666;--a3:#999999;--a4:#cccccc;
+  --txt0:#ffffff;--txt1:#aaaaaa;--txt2:#555555;
+  --bdr:rgba(255,255,255,0.08);--bdr2:rgba(255,255,255,0.22);
+  --glow:rgba(255,255,255,0.06);--glow2:rgba(255,255,255,0.03);
+  --ok:#6ee7b7;--warn:#fcd34d;--err:#fca5a5;
+}
+/* Paper — pure white with black accents */
+[data-theme="paper"] {
+  --bg0:#ffffff;--bg1:#f5f5f5;--bg2:#ebebeb;--bg3:#e0e0e0;
+  --a1:#1a1a1a;--a2:#333333;--a3:#555555;--a4:#888888;
+  --txt0:#0a0a0a;--txt1:#444444;--txt2:#999999;
+  --bdr:rgba(0,0,0,0.08);--bdr2:rgba(0,0,0,0.2);
+  --glow:rgba(0,0,0,0.05);--glow2:rgba(0,0,0,0.03);
+  --ok:#059669;--warn:#d97706;--err:#dc2626;
+}
+/* ── NEW: Midnight — black with electric indigo ── */
+[data-theme="midnight"] {
+  --bg0:#000000;--bg1:#05050f;--bg2:#0a0a1a;--bg3:#111128;
+  --a1:#3730a3;--a2:#6366f1;--a3:#a5b4fc;--a4:#e0e7ff;
+  --txt0:#eef2ff;--txt1:#818cf8;--txt2:#3730a3;
+  --bdr:rgba(99,102,241,0.15);--bdr2:rgba(99,102,241,0.40);
+  --glow:rgba(55,48,163,0.30);--glow2:rgba(99,102,241,0.12);
+  --ok:#34d399;--warn:#fbbf24;--err:#f87171;
+}
+/* ── NEW: Graphite — near-black warm grey with gold ── */
+[data-theme="graphite"] {
+  --bg0:#0d0d0d;--bg1:#141414;--bg2:#1c1c1c;--bg3:#242424;
+  --a1:#78350f;--a2:#b45309;--a3:#f59e0b;--a4:#fde68a;
+  --txt0:#fafaf9;--txt1:#a8a29e;--txt2:#44403c;
+  --bdr:rgba(180,83,9,0.18);--bdr2:rgba(245,158,11,0.38);
+  --glow:rgba(120,53,15,0.30);--glow2:rgba(180,83,9,0.12);
+  --ok:#34d399;--warn:#fbbf24;--err:#f87171;
+}
+/* ── NEW: Abyss — deepest black with cold green like a terminal ── */
+[data-theme="abyss"] {
+  --bg0:#000000;--bg1:#020a04;--bg2:#051209;--bg3:#081a0d;
+  --a1:#064e3b;--a2:#059669;--a3:#34d399;--a4:#a7f3d0;
+  --txt0:#ecfdf5;--txt1:#34d399;--txt2:#065f46;
+  --bdr:rgba(5,150,105,0.15);--bdr2:rgba(52,211,153,0.35);
+  --glow:rgba(6,78,59,0.35);--glow2:rgba(5,150,105,0.12);
+  --ok:#34d399;--warn:#fbbf24;--err:#f87171;
+}
+/* Paper-specific overrides */
+/* Paper-specific non-chat overrides */
+[data-theme="paper"] .main {
+  background:
+    radial-gradient(ellipse 60% 40% at 80% 5%, rgba(0,0,0,0.04), transparent 65%),
+    radial-gradient(ellipse 45% 35% at 5% 90%, rgba(0,0,0,0.02), transparent 65%),
+    #ffffff;
+}
+[data-theme="paper"] #bg-canvas { opacity: 0.25; }
+
+/* ══════════════════════════════════════════════════════════
+   SPLASH SCREEN
+══════════════════════════════════════════════════════════ */
+#splash {
+  position: fixed; inset: 0; z-index: 99999;
+  background: #060610;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 2rem;
+  transition: opacity 0.6s cubic-bezier(0.4,0,0.2,1), transform 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+#splash.hide {
+  opacity: 0; transform: scale(1.04); pointer-events: none;
+}
+.splash-canvas-wrap {
+  position: relative; width: 220px; height: 220px;
+  display: flex; align-items: center; justify-content: center;
+}
+#splash-canvas { position: absolute; inset: 0; }
+.splash-logo-text {
+  font-family: 'Fraunces', serif; font-size: 2.25rem; font-weight: 300;
+  letter-spacing: 0.35em; color: #f0eeff; text-transform: lowercase;
+  opacity: 0; animation: splashWordIn 0.7s 1.6s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+.splash-tagline {
+  font-family: 'Fira Code', monospace; font-size: 0.7rem; letter-spacing: 0.25em;
+  color: #453d70; text-transform: uppercase;
+  opacity: 0; animation: splashWordIn 0.6s 2s ease forwards;
+}
+.splash-bar-wrap {
+  width: 160px; height: 2px; background: var(--bdr); border-radius: 2px; overflow: hidden;
+  opacity: 0; animation: splashWordIn 0.4s 2.1s ease forwards;
+}
+.splash-bar {
+  height: 100%; width: 0%; background: linear-gradient(90deg, var(--a1), var(--a3));
+  border-radius: 2px; animation: splashLoad 1.2s 2.2s cubic-bezier(0.4,0,0.2,1) forwards;
+}
+@keyframes splashWordIn {
+  from { opacity:0; transform:translateY(8px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+@keyframes splashLoad {
+  from { width:0%; }
+  to   { width:100%; }
+}
+
+/* PWA install banner */
+#pwa-banner {
+  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+  background: var(--bg2); border: 1px solid var(--a2); border-radius: 16px;
+  padding: 0.875rem 1.25rem; display: flex; align-items: center; gap: 1rem;
+  box-shadow: 0 8px 32px var(--glow); z-index: 9000;
+  opacity: 0; pointer-events: none; transition: opacity 0.4s, transform 0.4s;
+  transform: translateX(-50%) translateY(12px);
+  white-space: nowrap;
+}
+#pwa-banner.show {
+  opacity: 1; pointer-events: all; transform: translateX(-50%) translateY(0);
+}
+.pwa-banner-text { font-family: 'Fira Code', monospace; font-size: 0.75rem; color: var(--txt1); letter-spacing: 0.06em; }
+.pwa-install-btn {
+  background: var(--a1); border: 1px solid var(--a2); color: #fff;
+  padding: 0.4rem 0.9rem; border-radius: 8px; cursor: pointer;
+  font-family: 'Fira Code', monospace; font-size: 0.7rem; letter-spacing: 0.06em;
+  transition: all 0.2s;
+}
+.pwa-install-btn:hover { background: var(--a2); }
+.pwa-dismiss-btn {
+  background: transparent; border: none; color: var(--txt2); cursor: pointer; font-size: 18px; line-height: 1;
+}
+@media (max-width:480px) {
+  #pwa-banner { bottom: 72px; max-width: calc(100vw - 2rem); }
+}
+
+/* ══════════════════════════════════════════════════════════
+   BASE
+══════════════════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;-webkit-font-smoothing:antialiased;}
+body{font-family:'Figtree',sans-serif;background:var(--bg0);color:var(--txt0);display:flex;transition:background 0.45s,color 0.45s;}
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-thumb{background:var(--a2);border-radius:2px;}
+
+/* ══════════════════════════════════════════════════════════
+   SIDEBAR
+══════════════════════════════════════════════════════════ */
+.sidebar{
+  width:var(--sidebar);min-width:var(--sidebar);height:100vh;
+  background:var(--bg1);border-right:1px solid var(--bdr);
+  display:flex;flex-direction:column;align-items:center;
+  padding:1.25rem 0;gap:0.5rem;position:relative;z-index:100;
+  transition:background 0.45s,border 0.45s;
+}
+.s-logo{margin-bottom:1.25rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:0.375rem;user-select:none;}
+.s-logo-icon{width:40px;height:26px;display:flex;align-items:center;justify-content:center;}
+.s-logo-icon svg{width:40px;height:26px;overflow:visible;color:var(--a2);}
+.inf-path{stroke-dasharray:220;stroke-dashoffset:220;animation:infDraw 1.4s cubic-bezier(0.4,0,0.2,1) forwards,infGlow 3s ease-in-out 1.4s infinite;}
+@keyframes infDraw{to{stroke-dashoffset:0;}}
+@keyframes infGlow{0%,100%{filter:drop-shadow(0 0 2px var(--a2));stroke:var(--a2);}50%{filter:drop-shadow(0 0 8px var(--a3)) drop-shadow(0 0 16px var(--a2));stroke:var(--a3);}}
+.inf-dot{animation:infDotAppear 0.1s 0.1s forwards;opacity:0;}
+@keyframes infDotAppear{to{opacity:1;}}
+.s-logo-name{font-family:'Fraunces',serif;font-size:0.625rem;font-weight:300;letter-spacing:0.22em;color:var(--a3);text-transform:lowercase;animation:nameFade 0.8s 1.2s both;}
+@keyframes nameFade{from{opacity:0;transform:translateY(3px);}to{opacity:1;transform:translateY(0);}}
+.nav-item{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.25s cubic-bezier(0.4,0,0.2,1);position:relative;color:rgba(255,255,255,0.72);border:1px solid transparent;}
+.nav-item svg{transition:transform 0.25s cubic-bezier(0.4,0,0.2,1);}
+.nav-item:hover{background:var(--bg3);color:rgba(255,255,255,0.95);}
+.nav-item:hover svg{transform:scale(1.1);}
+.nav-item.active{background:var(--a1);color:#fff;box-shadow:0 4px 20px var(--glow);border-color:var(--a2);}
+[data-theme="paper"] .nav-item{color:rgba(0,0,0,0.65);}
+[data-theme="paper"] .nav-item:hover{color:rgba(0,0,0,0.9);}
+[data-theme="paper"] .nav-item.active{color:#fff;}
+.tooltip{position:absolute;left:calc(100% + 12px);background:var(--bg3);border:1px solid var(--bdr2);color:var(--txt0);font-family:'Fira Code',monospace;font-size:0.625rem;letter-spacing:0.12em;white-space:nowrap;padding:0.375rem 0.75rem;border-radius:8px;pointer-events:none;opacity:0;transition:opacity 0.2s;z-index:200;}
+.nav-item:hover .tooltip,.s-settings:hover .tooltip{opacity:1;}
+.s-spacer{flex:1;}
+.s-settings{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,0.72);transition:all 0.25s cubic-bezier(0.4,0,0.2,1);border:1px solid transparent;position:relative;}
+[data-theme="paper"] .s-settings{color:rgba(0,0,0,0.65);}
+[data-theme="paper"] .s-settings:hover{color:var(--a3);}
+.s-settings svg{transition:transform 0.25s cubic-bezier(0.4,0,0.2,1);}
+.s-settings:hover{background:var(--bg3);color:var(--a3);}
+.s-settings:hover svg{transform:rotate(45deg);}
+
+/* ══════════════════════════════════════════════════════════
+   MAIN
+══════════════════════════════════════════════════════════ */
+.main{flex:1;height:100vh;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;position:relative;background:radial-gradient(ellipse 60% 40% at 80% 5%,var(--glow),transparent 65%),radial-gradient(ellipse 45% 35% at 5% 90%,var(--glow2),transparent 65%),var(--bg0);transition:background 0.45s;}
+#bg-canvas{position:fixed;top:0;left:var(--sidebar);width:calc(100% - var(--sidebar));height:100%;pointer-events:none;z-index:0;opacity:0.85;}
+.view{display:none;flex:1;padding:2rem;position:relative;z-index:1;animation:fadeIn 0.4s cubic-bezier(0.4,0,0.2,1);min-height:0;}
+.view.active{display:flex;flex-direction:column;}
+#ai-chat-view{padding:0;overflow:hidden;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* ══════════════════════════════════════════════════════════
+   ATOM VIEW
+══════════════════════════════════════════════════════════ */
+/* Atom timer styles → see hourglass.css */
+/* Resources section */
+.res-header{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:1.75rem;flex-wrap:wrap;gap:1rem;}
+.res-title{font-family:'Fraunces',serif;font-size:clamp(1.75rem,4vw,2.5rem);font-weight:500;color:var(--txt0);letter-spacing:-0.02em;}
+.res-subtitle{font-family:'Fira Code',monospace;font-size:0.7rem;color:var(--txt2);letter-spacing:0.15em;text-transform:uppercase;}
+.res-body{overflow-y:auto;flex:1;padding-bottom:2rem;}
+.res-category{margin-bottom:2.25rem;}
+.res-cat-label{font-family:'Fira Code',monospace;font-size:0.65rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--txt2);margin-bottom:1rem;display:flex;align-items:center;gap:10px;}
+.res-cat-label::after{content:'';flex:1;height:1px;background:var(--bdr);}
+.res-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.75rem;}
+.res-card{display:flex;align-items:center;gap:0.875rem;background:var(--bg2);border:1px solid var(--bdr);border-radius:14px;padding:0.875rem 1rem;text-decoration:none;color:var(--txt0);transition:all 0.25s cubic-bezier(0.4,0,0.2,1);position:relative;overflow:hidden;}
+.res-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--a1),var(--a2));opacity:0;transition:opacity 0.25s;}
+.res-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px var(--glow);border-color:var(--a2);}
+.res-card:hover::before{opacity:0.08;}
+.res-card:hover .res-card-name{color:var(--a3);}
+.res-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;border:1px solid var(--bdr2);background:var(--bg3);position:relative;z-index:1;}
+.res-card-body{flex:1;min-width:0;position:relative;z-index:1;}
+.res-card-name{font-size:0.875rem;font-weight:500;color:var(--txt0);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color 0.2s;margin-bottom:0.125rem;}
+.res-card-desc{font-family:'Fira Code',monospace;font-size:0.6rem;color:var(--txt2);letter-spacing:0.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.res-ext{position:absolute;top:0.5rem;right:0.625rem;color:var(--txt2);opacity:0;transition:opacity 0.2s;z-index:1;}
+.res-card:hover .res-ext{opacity:1;}
+
+/* ══════════════════════════════════════════════════════════
+   STICKIES
+══════════════════════════════════════════════════════════ */
+.stickies-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem;}
+.stickies-title{font-family:'Fraunces',serif;font-size:clamp(1.75rem,4vw,2.5rem);font-weight:500;color:var(--txt0);letter-spacing:-0.02em;}
+.sticky-add-btn{background:var(--a1);border:1px solid var(--a2);color:#fff;padding:0.875rem 1.5rem;border-radius:14px;cursor:pointer;font-family:'Fira Code',monospace;font-size:0.875rem;display:flex;align-items:center;gap:0.5rem;transition:all 0.25s cubic-bezier(0.4,0,0.2,1);}
+.sticky-add-btn:hover{background:var(--a2);transform:translateY(-2px);box-shadow:0 4px 20px var(--glow);}
+.sticky-add-btn svg{transition:transform 0.25s;}
+.sticky-add-btn:hover svg{transform:rotate(90deg);}
+.stickies-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem;padding-bottom:2rem;overflow-y:auto;}
+.sticky{background:var(--bg2);border:1px solid var(--bdr2);border-radius:16px;padding:1.5rem;min-height:200px;display:flex;flex-direction:column;gap:1rem;transition:all 0.3s cubic-bezier(0.4,0,0.2,1);animation:stickyAppear 0.4s cubic-bezier(0.34,1.56,0.64,1);position:relative;overflow:hidden;}
+.sticky::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--sticky-accent,var(--a2));border-radius:16px 16px 0 0;}
+.sticky:hover{transform:translateY(-4px);box-shadow:0 8px 32px var(--glow);border-color:var(--sticky-accent,var(--a2));}
+@keyframes stickyAppear{from{opacity:0;transform:scale(0.9) translateY(20px);}to{opacity:1;transform:scale(1) translateY(0);}}
+.sticky.vanishing{animation:vanishNote 0.4s cubic-bezier(0.4,0,0.2,1) forwards;pointer-events:none;}
+@keyframes vanishNote{0%{opacity:1;transform:scale(1);}100%{opacity:0;transform:scale(0.5) translateY(-30px);filter:blur(6px);}}
+.sticky-header{display:flex;align-items:center;justify-content:space-between;gap:0.5rem;}
+.sticky-colors{display:flex;gap:0.375rem;}
+.sticky-color{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all 0.2s;}
+.sticky-color:hover{transform:scale(1.15);border-color:var(--txt0);}
+.sticky-color.active{border-color:var(--txt0);box-shadow:0 0 8px currentColor;}
+.sticky-delete{background:transparent;border:1px solid var(--bdr);color:var(--txt2);width:28px;height:28px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.2s;}
+.sticky-delete:hover{border-color:var(--err);color:var(--err);background:rgba(248,113,113,0.1);}
+.sticky-textarea{flex:1;background:transparent;border:none;color:var(--txt0);font-family:'Figtree',sans-serif;font-size:0.9375rem;line-height:1.6;resize:none;outline:none;}
+.sticky-textarea::placeholder{color:var(--txt2);}
+.sticky-timestamp{font-family:'Fira Code',monospace;font-size:0.6875rem;color:var(--txt2);text-align:right;letter-spacing:0.05em;}
+.sticky[data-color="purple"]{--sticky-accent:#7c3aed;}
+.sticky[data-color="teal"]{--sticky-accent:#14b8a6;}
+.sticky[data-color="rose"]{--sticky-accent:#db2777;}
+.sticky[data-color="amber"]{--sticky-accent:#d97706;}
+.sticky[data-color="cyan"]{--sticky-accent:#0ea5e9;}
+.stickies-empty{grid-column:1/-1;text-align:center;padding:4rem 2rem;color:var(--txt2);}
+.stickies-empty svg{width:64px;height:64px;margin:0 auto 1.5rem;opacity:0.5;}
+.stickies-empty p{font-family:'Fira Code',monospace;font-size:0.875rem;letter-spacing:0.05em;}
+
+/* ══════════════════════════════════════════════════════════
+   AI CHAT — styles loaded from chatbot.css
+══════════════════════════════════════════════════════════ */
+/* chat send button styles in chatbot.css */
+
+/* ══════════════════════════════════════════════════════════
+   SETTINGS
+══════════════════════════════════════════════════════════ */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);z-index:9999;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;}
+.overlay.open{opacity:1;pointer-events:all;}
+.settings-modal{background:var(--bg1);border:1px solid var(--bdr2);border-radius:24px;width:min(540px,94vw);max-height:88vh;overflow-y:auto;padding:2rem;box-shadow:0 24px 80px rgba(0,0,0,0.8);transform:translateY(20px) scale(0.96);transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1);}
+.overlay.open .settings-modal{transform:translateY(0) scale(1);}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;}
+.modal-title{font-family:'Fraunces',serif;font-size:1.75rem;font-weight:500;color:var(--txt0);letter-spacing:-0.02em;}
+.modal-close{background:transparent;border:1px solid var(--bdr);color:var(--txt2);width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.modal-close:hover{border-color:var(--err);color:var(--err);transform:rotate(90deg);}
+.setting-section{margin-bottom:2rem;}
+.setting-title{font-family:'Fira Code',monospace;font-size:0.65rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--txt2);margin-bottom:1rem;display:flex;align-items:center;gap:12px;}
+.setting-title::after{content:'';flex:1;height:1px;background:var(--bdr);}
+.theme-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:0.75rem;}
+.theme-btn{background:var(--bg2);border:1px solid var(--bdr);color:var(--txt0);padding:0.75rem 1rem;border-radius:12px;cursor:pointer;font-family:'Fira Code',monospace;font-size:0.75rem;transition:all 0.2s;text-transform:lowercase;letter-spacing:0.05em;}
+.theme-btn:hover{background:var(--bg3);border-color:var(--a2);transform:translateY(-2px);}
+.theme-btn.active{background:var(--a1);border-color:var(--a2);color:#fff;box-shadow:0 4px 16px var(--glow);}
+.api-keys-container{display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1rem;}
+.api-key-item{background:var(--bg2);border:1px solid var(--bdr);border-radius:12px;padding:1rem;display:flex;align-items:center;gap:1rem;}
+.api-key-input{flex:1;background:var(--bg3);border:1px solid var(--bdr);color:var(--txt0);padding:0.5rem 0.75rem;border-radius:8px;font-family:'Fira Code',monospace;font-size:0.75rem;outline:none;}
+.api-key-input::placeholder{color:var(--txt2);}
+.api-key-status{font-family:'Fira Code',monospace;font-size:0.65rem;padding:0.25rem 0.5rem;border-radius:6px;text-transform:uppercase;flex-shrink:0;}
+.api-key-status.active{background:rgba(52,211,153,0.15);color:var(--ok);}
+.api-key-status.inactive{background:rgba(248,113,113,0.15);color:var(--err);}
+.api-key-remove{background:transparent;border:1px solid var(--bdr);color:var(--txt2);width:32px;height:32px;border-radius:8px;cursor:pointer;transition:all 0.2s;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.api-key-remove:hover{border-color:var(--err);color:var(--err);}
+.add-key-btn{background:var(--a1);border:1px solid var(--a2);color:#fff;padding:0.75rem 1.25rem;border-radius:12px;cursor:pointer;font-family:'Fira Code',monospace;font-size:0.75rem;transition:all 0.2s;width:100%;}
+.add-key-btn:hover{background:var(--a2);transform:translateY(-2px);box-shadow:0 4px 16px var(--glow);}
+.setting-info{margin-top:0.75rem;font-size:0.75rem;color:var(--txt2);line-height:1.5;}
+.setting-info a{color:var(--a3);text-decoration:none;}
+.setting-info a:hover{text-decoration:underline;}
+.about-info{background:var(--bg2);border:1px solid var(--bdr);border-radius:12px;padding:1.5rem;}
+.about-info p{margin-bottom:0.5rem;color:var(--txt1);font-size:0.875rem;}
+.about-info strong{color:var(--txt0);}
+
+/* ══════════════════════════════════════════════════════════
+   RESPONSIVE — full dynamic layout
+══════════════════════════════════════════════════════════ */
+
+/* ── 1100px: resources grid ── */
+@media (max-width:1100px){
+  .res-grid{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));}
+}
+
+/* ── 900px: atom canvas shrinks ── */
+@media (max-width:900px){
+  .atom-view-container{gap:1.5rem;}
+  .atom-timer-display{font-size:clamp(2.5rem,8vw,5rem);}
+  .atom-presets{gap:0.4rem;}
+  .atom-preset{padding:0.4rem 0.75rem;font-size:0.65rem;}
+  .res-grid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:0.625rem;}
+}
+
+/* ── 768px: sidebar slims, chat history hidden, tablet adjustments ── */
+@media (max-width:768px){
+  :root{--sidebar:58px;}
+  .sidebar{width:58px;min-width:58px;padding:1rem 0;}
+  .s-logo-name{display:none;}
+  .s-logo-icon{width:32px;height:22px;}
+  .s-logo-icon svg{width:32px;height:22px;}
+  .nav-item,.s-settings{width:42px;height:42px;border-radius:11px;}
+
+  .view{padding:1.25rem 1rem;}
+  #bg-canvas{opacity:0.6;}
+
+  /* Atom */
+  .atom-view-container{gap:1.25rem;padding:1rem;}
+  .atom-timer-display{font-size:clamp(2.25rem,9vw,4rem);}
+  .atom-controls{gap:0.625rem;}
+  .atom-btn{padding:0.625rem 1.1rem;font-size:0.75rem;}
+  .atom-presets{gap:0.375rem;}
+  .atom-preset{padding:0.375rem 0.7rem;font-size:0.625rem;}
+  .atom-custom-row{padding:0.4rem 0.75rem;gap:0.4rem;}
+  .atom-custom-row label{font-size:0.6rem;}
+  .atom-custom-row input{font-size:0.95rem;width:38px;}
+  .atom-duration-panel{gap:0.625rem;}
+
+  /* Stickies */
+  .stickies-title{font-size:1.75rem;}
+  .sticky-add-btn{padding:0.75rem 1.1rem;font-size:0.8rem;}
+  .stickies-grid{grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1.1rem;}
+  .sticky{padding:1.25rem;min-height:170px;}
+
+  /* Chat */
+  /* (responsive chat rules in chatbot.css) */
+
+  /* Resources */
+  .res-header{margin-bottom:1.25rem;}
+  .res-title{font-size:1.75rem;}
+  .res-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0.6rem;}
+  .res-card{padding:0.75rem 0.875rem;gap:0.75rem;border-radius:12px;}
+  .res-icon{width:34px;height:34px;font-size:18px;border-radius:8px;}
+  .res-card-name{font-size:0.8125rem;}
+  .res-category{margin-bottom:1.75rem;}
+
+  /* Settings */
+  .settings-modal{padding:1.5rem;border-radius:20px;}
+  .modal-title{font-size:1.5rem;}
+  .theme-grid{grid-template-columns:repeat(3,1fr);}
+}
+
+/* ── 600px: two-column resources, tighter everything ── */
+@media (max-width:600px){
+  .res-grid{grid-template-columns:repeat(2,1fr);gap:0.5rem;}
+  .res-card{padding:0.7rem 0.75rem;gap:0.6rem;}
+  .res-icon{width:30px;height:30px;font-size:16px;}
+  .res-card-name{font-size:0.75rem;}
+  .res-card-desc{display:none;}
+
+  .atom-controls{gap:0.5rem;}
+  .atom-btn{padding:0.6rem 1rem;font-size:0.725rem;border-radius:10px;}
+
+  .stickies-grid{grid-template-columns:1fr 1fr;gap:0.875rem;}
+}
+
+/* ── 480px: bottom nav bar, full single-column, mobile-first ── */
+@media (max-width:480px){
+  :root{--sidebar:0px;}
+
+  /* Bottom nav */
+  .sidebar{
+    position:fixed;bottom:0;left:0;width:100%;height:60px;min-width:unset;
+    flex-direction:row;justify-content:space-around;align-items:center;
+    border-right:none;border-top:1px solid var(--bdr);
+    padding:0 0.5rem;z-index:9998;gap:0;
+    background:var(--bg1);
+  }
+  .s-logo,.s-spacer{display:none;}
+  .nav-item,.s-settings{width:48px;height:48px;border-radius:12px;}
+  .tooltip{
+    left:50%;bottom:calc(100% + 6px);top:auto;
+    transform:translateX(-50%);
+    font-size:0.55rem;padding:0.25rem 0.5rem;
+  }
+
+  /* Canvas fills screen now that sidebar is bottom */
+  #bg-canvas{left:0;width:100%;}
+
+  /* Views get bottom padding for nav bar */
+  .view{padding:1rem 0.875rem 72px;}
+
+  /* Atom */
+  .atom-view-container{gap:1rem;justify-content:flex-start;padding-top:0.5rem;}
+  #atom-canvas{max-height:42vmax;}
+  .atom-timer-display{font-size:clamp(2rem,12vw,3.5rem);}
+  .atom-timer-label{font-size:0.65rem;letter-spacing:0.2em;}
+  .atom-controls{gap:0.5rem;width:100%;}
+  .atom-btn{flex:1;padding:0.625rem 0.5rem;font-size:0.7rem;min-width:0;}
+  .atom-presets{gap:0.3rem;}
+  .atom-preset{padding:0.35rem 0.6rem;font-size:0.6rem;border-radius:16px;}
+  .atom-duration-panel{width:100%;}
+  .atom-custom-row{justify-content:center;border-radius:12px;}
+
+  /* Stickies */
+  .stickies-header{flex-direction:column;align-items:stretch;}
+  .stickies-title{font-size:1.5rem;}
+  .sticky-add-btn{width:100%;justify-content:center;}
+  .stickies-grid{grid-template-columns:1fr;gap:0.875rem;}
+  .sticky{min-height:150px;padding:1.1rem;}
+
+/* ── Chat Mobile Fix ── */
+/* Prevent chat view from overflowing on mobile with virtual keyboard */
+#ai-chat-view {
+  padding: 0;
+  overflow: hidden;
+  /* Use dvh (dynamic viewport height) on mobile to account for keyboard */
+  height: 100dvh;
+}
+
+/* On mobile, avoid keyboard auto-show and layout shift */
+@media (max-width: 768px) {
+  #ai-chat-view {
+    height: 100%;
+    position: relative;
+  }
+  .chat-layout {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .chat-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .chat-messages {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    /* Ensure messages stay scrollable even when keyboard is up */
+    -webkit-overflow-scrolling: touch;
+  }
+  .chat-input-area {
+    /* Stick to bottom, never get hidden */
+    flex-shrink: 0;
+    position: relative;
+    z-index: 10;
+    background: var(--bg0);
+    /* Add safe area padding for iOS notch/home bar */
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+  /* Prevent auto-zoom on input focus on iOS */
+  #chat-input {
+    font-size: 16px !important;
+  }
+}
+
+  /* Resources */
+  .res-header{margin-bottom:1rem;}
+  .res-title{font-size:1.4rem;}
+  .res-body{padding-bottom:1rem;}
+  .res-grid{grid-template-columns:1fr 1fr;gap:0.45rem;}
+  .res-card{padding:0.625rem 0.7rem;gap:0.5rem;border-radius:10px;}
+  .res-icon{width:28px;height:28px;font-size:15px;border-radius:7px;}
+  .res-card-name{font-size:0.7rem;}
+  .res-ext{display:none;}
+  .res-category{margin-bottom:1.5rem;}
+  .res-cat-label{font-size:0.6rem;letter-spacing:0.18em;}
+
+  /* Settings */
+  .settings-modal{padding:1.25rem;max-height:92vh;border-radius:18px;}
+  .theme-grid{grid-template-columns:repeat(2,1fr);}
+  .api-key-item{flex-wrap:wrap;gap:0.5rem;}
+}
+
+/* ── 360px: very small phones ── */
+@media (max-width:360px){
+  .view{padding:0.75rem 0.75rem 72px;}
+  /* atom responsive → see hourglass.css */
+  .res-grid{grid-template-columns:1fr;}
+  .res-card{flex-direction:row;}
+  .stickies-grid{grid-template-columns:1fr;}
+  .chat-bubble{max-width:95%;}
+  .atom-timer-display{font-size:clamp(1.75rem,14vw,3rem);}
+}
+
+/* ══════════════════════════════════════════════════════════
+   AI CHAT HERO ANIMATION
+══════════════════════════════════════════════════════════ */
+.chat-hero {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 2rem; pointer-events: none; z-index: 0; overflow: hidden;
+}
+.hero-symbols-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hero-orb {
+  position: relative; width: 120px; height: 120px;
+  display: flex; align-items: center; justify-content: center;
+  animation: heroOrbFloat 4s ease-in-out infinite;
+}
+@keyframes heroOrbFloat {
+  0%,100% { transform: translateY(0px); }
+  50%     { transform: translateY(-12px); }
+}
+.hero-orb-ring {
+  position: absolute; border-radius: 50%;
+  border: 1.5px solid var(--a2);
+  animation: heroRingPulse 3s ease-in-out infinite;
+}
+.hero-orb-ring:nth-child(1) { width:80px;  height:80px;  opacity:0.6; animation-delay:0s; }
+.hero-orb-ring:nth-child(2) { width:100px; height:100px; opacity:0.35; animation-delay:0.4s; }
+.hero-orb-ring:nth-child(3) { width:120px; height:120px; opacity:0.2; animation-delay:0.8s; }
+@keyframes heroRingPulse {
+  0%,100% { transform: scale(1); }
+  50%     { transform: scale(1.08); }
+}
+.hero-orb-core {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, var(--a3), var(--a1));
+  box-shadow: 0 0 30px var(--glow), 0 0 60px var(--glow2), inset 0 0 20px rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center; font-size: 22px;
+  animation: heroCoreGlow 3s ease-in-out infinite;
+}
+@keyframes heroCoreGlow {
+  0%,100% { box-shadow: 0 0 30px var(--glow), 0 0 60px var(--glow2); }
+  50%     { box-shadow: 0 0 50px var(--glow), 0 0 100px var(--glow2), 0 0 20px var(--a3); }
+}
+.hero-orbit {
+  position: absolute; width: 100px; height: 100px;
+  border-radius: 50%; animation: heroOrbit linear infinite; transform-origin: center;
+}
+.hero-orbit:nth-child(4) { animation-duration:3.2s; }
+.hero-orbit:nth-child(5) { animation-duration:4.8s; }
+.hero-orbit:nth-child(6) { animation-duration:6.4s; }
+@keyframes heroOrbit { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+.hero-orbit-dot {
+  position: absolute; top: -4px; left: 50%; transform: translateX(-50%);
+  width: 8px; height: 8px; border-radius: 50%; background: var(--a3);
+  box-shadow: 0 0 10px var(--a3), 0 0 20px var(--a2);
+}
+.hero-text {
+  text-align: center; z-index: 1; pointer-events: all;
+  animation: heroTextIn 0.8s 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes heroTextIn {
+  from { opacity:0; transform:translateY(20px) scale(0.95); }
+  to   { opacity:1; transform:translateY(0) scale(1); }
+}
+.hero-title {
+  font-family: 'Fraunces', serif; font-size: clamp(1.5rem,4vw,2.2rem);
+  font-weight: 300; color: var(--txt0); letter-spacing: -0.01em;
+  margin-bottom: 0.5rem; line-height: 1.2;
+}
+.hero-subtitle {
+  font-family: 'Fira Code', monospace; font-size: 0.72rem;
+  letter-spacing: 0.18em; color: var(--a3); text-transform: uppercase;
+  margin-bottom: 1.75rem; opacity: 0.8;
+}
+.hero-formula {
+  font-family: 'Fira Code', monospace; font-size: 0.75rem;
+  color: var(--a3); background: var(--bg2);
+  border: 1px solid var(--bdr2); border-radius: 8px;
+  padding: 0.35rem 0.65rem; letter-spacing: 0.06em;
+  opacity: 0; animation: heroFormulaFloat linear infinite;
+  position: absolute; white-space: nowrap;
+}
+@keyframes heroFormulaFloat {
+  0%   { opacity:0; transform:translateY(0); }
+  10%  { opacity:0.7; }
+  90%  { opacity:0.7; }
+  100% { opacity:0; transform:translateY(-90px); }
+}
+.hero-suggestions {
+  display: flex; flex-wrap: wrap; gap: 0.5rem;
+  justify-content: center; max-width: 480px; pointer-events: all;
+}
+.hero-suggestion {
+  background: var(--bg2); border: 1px solid var(--bdr2);
+  color: var(--txt1); padding: 0.5rem 0.9rem; border-radius: 20px;
+  cursor: pointer; transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
+  font-family: 'Fira Code', monospace; font-size: 0.68rem; letter-spacing: 0.04em;
+  animation: heroSuggIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+.hero-suggestion:nth-child(1){animation-delay:0.5s;}
+.hero-suggestion:nth-child(2){animation-delay:0.65s;}
+.hero-suggestion:nth-child(3){animation-delay:0.8s;}
+.hero-suggestion:nth-child(4){animation-delay:0.95s;}
+@keyframes heroSuggIn {
+  from { opacity:0; transform:translateY(10px) scale(0.9); }
+  to   { opacity:1; transform:translateY(0) scale(1); }
+}
+.hero-suggestion:hover {
+  background: var(--bg3); border-color: var(--a2); color: var(--a3);
+  transform: translateY(-2px); box-shadow: 0 4px 16px var(--glow);
+}
+@media (max-width:768px) {
+  .hero-orb { width:90px; height:90px; }
+  .hero-orb-core { width:38px; height:38px; font-size:18px; }
+  .hero-orb-ring:nth-child(1) { width:60px; height:60px; }
+  .hero-orb-ring:nth-child(2) { width:76px; height:76px; }
+  .hero-orb-ring:nth-child(3) { width:90px; height:90px; }
+  .hero-title { font-size:1.4rem; }
+  .hero-formula { display:none; }
+}
+</style>
+</head>
+<body>
+
+
+<!-- Splash Screen -->
+<div id="splash">
+  <div class="splash-canvas-wrap">
+    <canvas id="splash-canvas" width="220" height="220"></canvas>
+  </div>
+  <div class="splash-logo-text">nexus</div>
+  <div class="splash-tagline">ai · focus · knowledge</div>
+  <div class="splash-bar-wrap"><div class="splash-bar"></div></div>
+</div>
+
+<!-- PWA Install Banner -->
+<div id="pwa-banner">
+  <span class="pwa-banner-text">install nexus for offline use</span>
+  <button class="pwa-install-btn" id="pwa-install-btn">Install</button>
+  <button class="pwa-dismiss-btn" id="pwa-dismiss-btn">✕</button>
+</div>
+
+<!-- Sidebar -->
+<nav class="sidebar">
+  <div class="s-logo" title="Nexus AI">
+    <div class="s-logo-icon">
+      <svg viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path class="inf-path" d="M25,30 C25,15 35,5 50,5 C65,5 75,15 75,30 C75,45 65,55 50,55 C35,55 25,45 25,30 M50,30 C50,15 60,5 75,5 C90,5 100,15 100,30 C100,45 90,55 75,55 C60,55 50,45 50,30" stroke="currentColor" stroke-width="3" fill="none"/>
+        <g class="inf-dot">
+          <circle r="4" fill="currentColor">
+            <animateMotion dur="2.4s" repeatCount="indefinite" path="M25,30 C25,15 35,5 50,5 C65,5 75,15 75,30 C75,45 65,55 50,55 C35,55 25,45 25,30 M50,30 C50,15 60,5 75,5 C90,5 100,15 100,30 C100,45 90,55 75,55 C60,55 50,45 50,30"/>
+          </circle>
+        </g>
+      </svg>
+    </div>
+    <div class="s-logo-name">nexus</div>
+  </div>
+
+  <div class="nav-item active" data-view="atom">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+      <circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"/>
+      <ellipse cx="12" cy="12" rx="10" ry="3.8"/>
+      <ellipse cx="12" cy="12" rx="10" ry="3.8" transform="rotate(60 12 12)"/>
+      <ellipse cx="12" cy="12" rx="10" ry="3.8" transform="rotate(120 12 12)"/>
+    </svg>
+    <span class="tooltip">atom timer</span>
+  </div>
+
+  <div class="nav-item" data-view="stickies">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M3 3h18v18h-9L3 12V3z"/>
+    </svg>
+    <span class="tooltip">stickies</span>
+  </div>
+
+  <div class="nav-item" data-view="ai-chat">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+    <span class="tooltip">ai chat</span>
+  </div>
+
+  <div class="nav-item" data-view="resources">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+    </svg>
+    <span class="tooltip">resources</span>
+  </div>
+
+  <div class="s-spacer"></div>
+
+  <div class="s-settings">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6M1 12h6m6 0h6"/>
+    </svg>
+    <span class="tooltip">settings</span>
+  </div>
+</nav>
+
+<!-- Main -->
+<main class="main">
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- Atom Timer View -->
+  <section class="view active" id="atom-view">
+    <div class="atom-view-container">
+      <canvas id="atom-canvas"></canvas>
+      <div>
+        <div class="atom-timer-display" id="atom-time">05:00</div>
+        <div class="atom-timer-label" id="atom-status-label">ready</div>
+      </div>
+      <div class="atom-controls">
+        <button class="atom-btn primary" id="atom-start">start</button>
+        <button class="atom-btn" id="atom-pause" disabled>pause</button>
+        <button class="atom-btn" id="atom-reset">reset</button>
+      </div>
+      <div class="atom-duration-panel">
+        <div class="atom-presets" id="atom-presets">
+          <button class="atom-preset" data-sec="300">5 min</button>
+          <button class="atom-preset" data-sec="600">10 min</button>
+          <button class="atom-preset active" data-sec="1500">25 min</button>
+          <button class="atom-preset" data-sec="2700">45 min</button>
+          <button class="atom-preset" data-sec="3600">1 hr</button>
+          <button class="atom-preset" data-sec="5400">1.5 hr</button>
+          <button class="atom-preset" data-sec="7200">2 hr</button>
+        </div>
+        <div class="atom-custom-row">
+          <label>custom</label>
+          <input type="number" id="atom-min" value="25" min="0" max="99" placeholder="mm">
+          <span class="atom-custom-sep">:</span>
+          <input type="number" id="atom-sec-inp" value="00" min="0" max="59" placeholder="ss">
+          <label>mm : ss</label>
+        </div>
+      </div>
+      <div class="atom-finished" id="atom-finished">✦ time complete ✦</div>
+    </div>
+  </section>
+
+  <!-- Stickies View -->
+  <section class="view" id="stickies-view">
+    <div class="stickies-header">
+      <h2 class="stickies-title">Sticky Notes</h2>
+      <button class="sticky-add-btn" id="add-sticky">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Add Note
+      </button>
+    </div>
+    <div class="stickies-grid" id="stickies-container"></div>
+  </section>
+
+  <!-- AI Chat View -->
+  <section class="view" id="ai-chat-view">
+    <div class="chat-layout">
+      <!-- Chat sidebar with history -->
+      <div class="chat-sidebar">
+        <div class="chat-sidebar-header">
+          <div class="chat-sidebar-title">Chats</div>
+          <button class="new-chat-btn" id="new-chat-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            New Chat
+          </button>
+        </div>
+        <div class="chat-history-list" id="chat-history-list"></div>
+      </div>
+
+      <!-- Chat main -->
+      <div class="chat-main">
+        <div class="chat-topbar">
+          <div class="chat-topbar-left">
+            <div class="chat-model-badge" id="chat-model-badge">llama-3.3-70b</div>
+            <div class="chat-status" id="chat-status">Ready</div>
+          </div>
+          <button class="chat-clear-btn" id="chat-clear-btn">Clear Chat</button>
+        </div>
+
+        <div class="chat-messages" id="chat-messages" style="position:relative;"></div>
+
+        <div class="chat-input-area">
+          <div class="chat-image-attach-preview" id="chat-image-preview" style="display:none">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <span id="chat-image-preview-name">image attached</span>
+            <button id="chat-image-remove">✕</button>
+          </div>
+          <div class="chat-input-container">
+            <label class="chat-file-btn" for="chat-file-input" title="Attach image">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+              </svg>
+            </label>
+            <input type="file" id="chat-file-input" accept="image/*" style="display:none">
+            <!-- inputmode="text" prevents auto-keyboard-popup on mobile -->
+            <textarea id="chat-input" placeholder="Ask me anything..." rows="1" inputmode="text" autocomplete="off" autocorrect="on" spellcheck="true"></textarea>
+            <button class="chat-send-btn" id="chat-send">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Resources View -->
+  <section class="view" id="resources-view">
+    <div class="res-header">
+      <h2 class="res-title">JEE Study Resources</h2>
+      <span class="res-subtitle">curated for iit jee aspirants</span>
+    </div>
+    <div class="res-body">
+
+      <div class="res-category">
+        <div class="res-cat-label">🎯 JEE Prep Platforms</div>
+        <div class="res-grid">
+          <a class="res-card" href="https://www.jeemain.nta.nic.in" target="_blank" rel="noopener">
+            <div class="res-icon">🏛️</div>
+            <div class="res-card-body"><div class="res-card-name">NTA JEE Main</div><div class="res-card-desc">official exam portal & results</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://allen.ac.in" target="_blank" rel="noopener">
+            <div class="res-icon">🔥</div>
+            <div class="res-card-body"><div class="res-card-name">ALLEN Career</div><div class="res-card-desc">kota's top JEE institute</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://www.vedantu.com/jee" target="_blank" rel="noopener">
+            <div class="res-icon">📱</div>
+            <div class="res-card-body"><div class="res-card-name">Vedantu JEE</div><div class="res-card-desc">live classes & test series</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://www.unacademy.com/goal/jee-main-and-advanced-preparation" target="_blank" rel="noopener">
+            <div class="res-icon">🎓</div>
+            <div class="res-card-body"><div class="res-card-name">Unacademy JEE</div><div class="res-card-desc">top educators & courses</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://www.pw.live" target="_blank" rel="noopener">
+            <div class="res-icon">⚡</div>
+            <div class="res-card-body"><div class="res-card-name">Physics Wallah</div><div class="res-card-desc">alakh pandey's free JEE content</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://www.doubtnut.com" target="_blank" rel="noopener">
+            <div class="res-icon">❓</div>
+            <div class="res-card-body"><div class="res-card-name">Doubtnut</div><div class="res-card-desc">photo your doubt, get solution</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="res-category">
+        <div class="res-cat-label">📹 YouTube Channels (Free)</div>
+        <div class="res-grid">
+          <a class="res-card" href="https://www.youtube.com/@PhysicsWallah" target="_blank" rel="noopener">
+            <div class="res-icon">🧲</div>
+            <div class="res-card-body"><div class="res-card-name">Physics Wallah YT</div><div class="res-card-desc">free JEE physics & chemistry</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://www.youtube.com/@MathonGo" target="_blank" rel="noopener">
+            <div class="res-icon">📐</div>
+            <div class="res-card-body"><div class="res-card-name">MathonGo</div><div class="res-card-desc">JEE maths by anup gupta</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://www.youtube.com/@etoosindia" target="_blank" rel="noopener">
+            <div class="res-icon">🏫</div>
+            <div class="res-card-body"><div class="res-card-name">Etoos India</div><div class="res-card-desc">kota faculty video lectures</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://www.youtube.com/@NEETprep" target="_blank" rel="noopener">
+            <div class="res-icon">🔬</div>
+            <div class="res-card-body"><div class="res-card-name">NEETprep Biology</div><div class="res-card-desc">biology for JEE advanced</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://nptel.ac.in" target="_blank" rel="noopener">
+            <div class="res-icon">🇮🇳</div>
+            <div class="res-card-body"><div class="res-card-name">NPTEL</div><div class="res-card-desc">IIT faculty lecture series</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://www.youtube.com/@3blue1brown" target="_blank" rel="noopener">
+            <div class="res-icon">🟣</div>
+            <div class="res-card-body"><div class="res-card-name">3Blue1Brown</div><div class="res-card-desc">deep maths intuition visuals</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="res-category">
+        <div class="res-cat-label">📄 Previous Year Papers & Mock Tests</div>
+        <div class="res-grid">
+          <a class="res-card" href="https://jeemain.nta.nic.in/web/Guest/home" target="_blank" rel="noopener">
+            <div class="res-icon">📋</div>
+            <div class="res-card-body"><div class="res-card-name">JEE Main PYQ</div><div class="res-card-desc">official NTA past papers</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://www.career360.com/exams/jee-advanced/previous-year-question-papers" target="_blank" rel="noopener">
+            <div class="res-icon">🏆</div>
+            <div class="res-card-body"><div class="res-card-name">JEE Advanced PYQ</div><div class="res-card-desc">advanced papers 2010–2024</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://www.embibe.com/exams/jee-main" target="_blank" rel="noopener">
+            <div class="res-icon">💡</div>
+            <div class="res-card-body"><div class="res-card-name">Embibe</div><div class="res-card-desc">adaptive mock tests & analysis</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://www.toppr.com/guides/jee-advanced" target="_blank" rel="noopener">
+            <div class="res-icon">🎯</div>
+            <div class="res-card-body"><div class="res-card-name">Toppr</div><div class="res-card-desc">chapter tests & solutions</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://www.indiabix.com/aptitude/questions-and-answers" target="_blank" rel="noopener">
+            <div class="res-icon">🔢</div>
+            <div class="res-card-body"><div class="res-card-name">IndiaBix</div><div class="res-card-desc">aptitude & quantitative MCQs</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://disha.page.link" target="_blank" rel="noopener">
+            <div class="res-icon">📚</div>
+            <div class="res-card-body"><div class="res-card-name">Disha Publication</div><div class="res-card-desc">chapter-wise MCQ banks</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="res-category">
+        <div class="res-cat-label">🧮 Math & Science Tools</div>
+        <div class="res-grid">
+          <a class="res-card" href="https://www.wolframalpha.com" target="_blank" rel="noopener">
+            <div class="res-icon">🔢</div>
+            <div class="res-card-body"><div class="res-card-name">Wolfram Alpha</div><div class="res-card-desc">step-by-step solutions</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://www.desmos.com/calculator" target="_blank" rel="noopener">
+            <div class="res-icon">📈</div>
+            <div class="res-card-body"><div class="res-card-name">Desmos</div><div class="res-card-desc">graphing & function plotter</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://www.geogebra.org" target="_blank" rel="noopener">
+            <div class="res-icon">📐</div>
+            <div class="res-card-body"><div class="res-card-name">GeoGebra</div><div class="res-card-desc">geometry & coordinate visualizer</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://phet.colorado.edu" target="_blank" rel="noopener">
+            <div class="res-icon">⚛️</div>
+            <div class="res-card-body"><div class="res-card-name">PhET Simulations</div><div class="res-card-desc">interactive physics & chemistry</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://brilliant.org" target="_blank" rel="noopener">
+            <div class="res-icon">💎</div>
+            <div class="res-card-body"><div class="res-card-name">Brilliant.org</div><div class="res-card-desc">problem-solving maths & science</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://www.khanacademy.org/math" target="_blank" rel="noopener">
+            <div class="res-icon">🎓</div>
+            <div class="res-card-body"><div class="res-card-name">Khan Academy Math</div><div class="res-card-desc">calculus, algebra, trig</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="res-category">
+        <div class="res-cat-label">📚 Reference & Notes</div>
+        <div class="res-grid">
+          <a class="res-card" href="https://en.wikipedia.org" target="_blank" rel="noopener">
+            <div class="res-icon">📖</div>
+            <div class="res-card-body"><div class="res-card-name">Wikipedia</div><div class="res-card-desc">concept reference & theory</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://ncert.nic.in/textbook.php" target="_blank" rel="noopener">
+            <div class="res-icon">📗</div>
+            <div class="res-card-body"><div class="res-card-name">NCERT Books</div><div class="res-card-desc">official class 11 & 12 textbooks</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://www.careers360.com/jee" target="_blank" rel="noopener">
+            <div class="res-icon">🗞️</div>
+            <div class="res-card-body"><div class="res-card-name">Careers360</div><div class="res-card-desc">rank predictors, cutoffs, updates</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://josaa.nic.in" target="_blank" rel="noopener">
+            <div class="res-icon">🏛️</div>
+            <div class="res-card-body"><div class="res-card-name">JoSAA</div><div class="res-card-desc">IIT/NIT seat allotment portal</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://www.notion.so" target="_blank" rel="noopener">
+            <div class="res-icon">📝</div>
+            <div class="res-card-body"><div class="res-card-name">Notion</div><div class="res-card-desc">notes, study planner, tracker</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://apps.ankiweb.net" target="_blank" rel="noopener">
+            <div class="res-icon">🃏</div>
+            <div class="res-card-body"><div class="res-card-name">Anki</div><div class="res-card-desc">spaced repetition for formulas</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="res-category">
+        <div class="res-cat-label">🤖 AI Study Tools</div>
+        <div class="res-grid">
+          <a class="res-card" href="https://claude.ai" target="_blank" rel="noopener">
+            <div class="res-icon">✦</div>
+            <div class="res-card-body"><div class="res-card-name">Claude</div><div class="res-card-desc">explain concepts & solve doubts</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://www.photomath.com" target="_blank" rel="noopener">
+            <div class="res-icon">📷</div>
+            <div class="res-card-body"><div class="res-card-name">Photomath</div><div class="res-card-desc">scan & solve equations</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://www.perplexity.ai" target="_blank" rel="noopener">
+            <div class="res-icon">🔍</div>
+            <div class="res-card-body"><div class="res-card-name">Perplexity AI</div><div class="res-card-desc">AI-powered concept search</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://quizlet.com" target="_blank" rel="noopener">
+            <div class="res-icon">🧩</div>
+            <div class="res-card-body"><div class="res-card-name">Quizlet</div><div class="res-card-desc">formula flashcard sets</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://chatgpt.com" target="_blank" rel="noopener">
+            <div class="res-icon">🟢</div>
+            <div class="res-card-body"><div class="res-card-name">ChatGPT</div><div class="res-card-desc">solve problems step-by-step</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://www.chegg.com/math-solver" target="_blank" rel="noopener">
+            <div class="res-icon">🧠</div>
+            <div class="res-card-body"><div class="res-card-name">Chegg Math Solver</div><div class="res-card-desc">step-by-step math help</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="res-category">
+        <div class="res-cat-label">🧘 Focus & Productivity</div>
+        <div class="res-grid">
+          <a class="res-card" href="https://www.focusmate.com" target="_blank" rel="noopener">
+            <div class="res-icon">🤝</div>
+            <div class="res-card-body"><div class="res-card-name">Focusmate</div><div class="res-card-desc">accountability study sessions</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://mynoise.net" target="_blank" rel="noopener">
+            <div class="res-icon">🎵</div>
+            <div class="res-card-body"><div class="res-card-name">myNoise</div><div class="res-card-desc">focus soundscapes</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://excalidraw.com" target="_blank" rel="noopener">
+            <div class="res-icon">✏️</div>
+            <div class="res-card-body"><div class="res-card-name">Excalidraw</div><div class="res-card-desc">whiteboard diagrams & notes</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://calendar.google.com" target="_blank" rel="noopener">
+            <div class="res-icon">📅</div>
+            <div class="res-card-body"><div class="res-card-name">Google Calendar</div><div class="res-card-desc">schedule & study timetable</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://www.forestapp.cc" target="_blank" rel="noopener">
+            <div class="res-icon">🌲</div>
+            <div class="res-card-body"><div class="res-card-name">Forest App</div><div class="res-card-desc">stay off phone, grow trees</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+          <a class="res-card" href="https://lofi.cafe" target="_blank" rel="noopener">
+            <div class="res-icon">☕</div>
+            <div class="res-card-body"><div class="res-card-name">Lofi Cafe</div><div class="res-card-desc">lofi beats for late night study</div></div>
+            <svg class="res-ext" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+</main>
+
+<!-- Settings Overlay -->
+<div class="overlay" id="settings-overlay">
+  <div class="settings-modal">
+    <div class="modal-header">
+      <h3 class="modal-title">Settings</h3>
+      <button class="modal-close" id="close-settings">✕</button>
+    </div>
+    <div class="setting-section">
+      <div class="setting-title">Theme</div>
+      <div class="theme-grid">
+        <button class="theme-btn active" data-theme="nexus">Nexus</button>
+        <button class="theme-btn" data-theme="aurora">Aurora</button>
+        <button class="theme-btn" data-theme="crimson">Crimson</button>
+        <button class="theme-btn" data-theme="solar">Solar</button>
+        <button class="theme-btn" data-theme="neon">Neon</button>
+        <button class="theme-btn" data-theme="rose">Rose</button>
+        <button class="theme-btn" data-theme="obsidian">Obsidian</button>
+        <button class="theme-btn" data-theme="midnight">Midnight</button>
+        <button class="theme-btn" data-theme="graphite">Graphite</button>
+        <button class="theme-btn" data-theme="abyss">Abyss</button>
+        <button class="theme-btn" data-theme="paper">Paper</button>
+      </div>
+    </div>
+    <div class="setting-section">
+      <div class="setting-title">Groq API Keys</div>
+      <div class="api-keys-container" id="api-keys-list"></div>
+      <button class="add-key-btn" id="add-api-key">+ Add API Key</button>
+      <div class="setting-info">
+        Keys rotate automatically on rate limits. Get a free key at <a href="https://console.groq.com" target="_blank">console.groq.com</a>
+      </div>
+    </div>
+    <div class="setting-section">
+      <div class="setting-title">About</div>
+      <div class="about-info">
+        <p><strong>Nexus AI</strong> v1.0.0</p>
+        <p>Atom physics timer · Sticky notes · AI chat with Groq</p>
+        <p style="margin-top:0.5rem;font-size:0.75rem;color:var(--txt2);">Built with ❤️ — MIT License</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   INLINE PWA MANIFEST INJECTION
+══════════════════════════════════════════════════════════ */
+(function() {
+  const manifest = {
+    name: "Nexus AI",
+    short_name: "Nexus",
+    description: "AI productivity hub — atom timer, sticky notes, AI chat",
+    start_url: "./",
+    display: "standalone",
+    orientation: "any",
+    background_color: "#060610",
+    theme_color: "#7c3aed",
+    icons: [
+      {
+        src: "data:image/svg+xml," + encodeURIComponent(`<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="512" height="512" rx="100" fill="#060610"/><path d="M128 256c0-72 38-128 110-128s110 56 110 128-38 128-110 128S128 328 128 256zm110 0c0-72 38-128 110-128s110 56 110 128-38 128-110 128-110-56-110-128z" fill="none" stroke="#7c3aed" stroke-width="24"/></svg>`),
+        sizes: "512x512",
+        type: "image/svg+xml",
+        purpose: "any maskable"
+      }
+    ],
+    shortcuts: [
+      { name: "Timer", url: "./?v=atom", description: "Open atom timer" },
+      { name: "Notes", url: "./?v=stickies", description: "Open sticky notes" },
+      { name: "AI Chat", url: "./?v=ai-chat", description: "Open AI assistant" }
+    ],
+    categories: ["productivity", "education", "utilities"]
+  };
+
+  const blob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.getElementById('pwa-manifest');
+  if (link) link.href = url;
+
+  // Handle shortcut deep-link on launch
+  const params = new URLSearchParams(location.search);
+  const view = params.get('v');
+  if (view) window._startView = view;
+})();
+
+/* ══════════════════════════════════════════════════════════
+   STORAGE UTILITY
+══════════════════════════════════════════════════════════ */
+const Storage = {
+  get(key, def = null) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : def; } catch { return def; } },
+  set(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); return true; } catch { return false; } },
+  remove(key) { try { localStorage.removeItem(key); return true; } catch { return false; } }
+};
+
+/* ══════════════════════════════════════════════════════════
+   ANIMATED BACKGROUND
+══════════════════════════════════════════════════════════ */
+(function() {
+  const canvas = document.getElementById('bg-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, items = [], tick = 0;
+  const TAU = Math.PI * 2;
+  const rng = (a, b) => a + Math.random() * (b - a);
+
+  const MATH = ['∞','∫','∑','π','θ','Δ','∂','√','±','≈','λ','ℏ','Ψ'];
+
+  function getAccent(alpha = 1) {
+    const s = getComputedStyle(document.documentElement);
+    return s.getPropertyValue('--a2').trim() + Math.floor(alpha * 255).toString(16).padStart(2, '0');
+  }
+  function getAccent3(alpha = 1) {
+    const s = getComputedStyle(document.documentElement);
+    return s.getPropertyValue('--a3').trim() + Math.floor(alpha * 255).toString(16).padStart(2, '0');
+  }
+
+  function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    W = canvas.parentElement.offsetWidth; H = canvas.parentElement.offsetHeight;
+    canvas.width = W * dpr; canvas.height = H * dpr;
+    canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+    ctx.scale(dpr, dpr); populate();
+  }
+
+  function populate() {
+    items = [];
+    const n = Math.min((W * H / 35000) | 0, 35);
+    for (let i = 0; i < n; i++) {
+      const kind = Math.floor(Math.random() * 4);
+      const base = { x: Math.random() * W, y: Math.random() * H, vx: rng(-0.08, 0.08), vy: rng(-0.06, 0.06), phase: Math.random() * TAU, pulse: rng(0.3, 0.7), alpha: rng(0.2, 0.55) };
+      if (kind < 2) {
+        items.push({ ...base, type: 'sym', text: MATH[Math.floor(Math.random() * MATH.length)], size: rng(11, 22), col: kind === 0 ? getAccent(0.7) : getAccent3(0.6) });
+      } else if (kind === 2) {
+        items.push({ ...base, type: 'hex', r: rng(14, 24), col: getAccent(0.6), rot: Math.random() * TAU, rotV: rng(-0.003, 0.003) });
+      } else {
+        items.push({ ...base, type: 'wave', len: rng(70, 120), amp: rng(6, 14), col: getAccent(0.5), freq: rng(1.5, 3) });
+      }
+    }
+  }
+
+  function loop() {
+    ctx.clearRect(0, 0, W, H);
+    tick += 0.005;
+    for (const it of items) {
+      it.x += it.vx; it.y += it.vy;
+      if (it.x < -100) it.x = W + 80; if (it.x > W + 100) it.x = -80;
+      if (it.y < -100) it.y = H + 80; if (it.y > H + 100) it.y = -80;
+      const pulse = it.alpha * (0.5 + 0.5 * Math.sin(tick * it.pulse + it.phase));
+      if (it.type === 'sym') {
+        ctx.save(); ctx.globalAlpha = pulse; ctx.font = `${it.size}px 'Fira Code',monospace`;
+        ctx.fillStyle = it.col; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.translate(it.x, it.y); ctx.rotate(Math.sin(tick * 0.4 + it.phase) * 0.07);
+        ctx.fillText(it.text, 0, 0); ctx.restore();
+      } else if (it.type === 'hex') {
+        it.rot += it.rotV;
+        ctx.save(); ctx.globalAlpha = pulse; ctx.translate(it.x, it.y); ctx.rotate(it.rot);
+        ctx.strokeStyle = it.col; ctx.lineWidth = 1.1; ctx.beginPath();
+        for (let j = 0; j < 6; j++) { const a = (j / 6) * TAU; j === 0 ? ctx.moveTo(Math.cos(a) * it.r, Math.sin(a) * it.r) : ctx.lineTo(Math.cos(a) * it.r, Math.sin(a) * it.r); }
+        ctx.closePath(); ctx.stroke();
+        ctx.beginPath(); ctx.arc(0, 0, it.r * 0.45, 0, TAU); ctx.stroke();
+        ctx.restore();
+      } else {
+        ctx.save(); ctx.globalAlpha = pulse; ctx.strokeStyle = it.col; ctx.lineWidth = 1.4; ctx.beginPath();
+        for (let j = 0; j <= it.len; j += 2) { const py = it.y + Math.sin((j / it.len) * TAU * it.freq + tick * 2) * it.amp; j === 0 ? ctx.moveTo(it.x - it.len / 2 + j, py) : ctx.lineTo(it.x - it.len / 2 + j, py); }
+        ctx.stroke(); ctx.restore();
+      }
+    }
+    requestAnimationFrame(loop);
+  }
+
+  window.addEventListener('resize', resize);
+  window.addEventListener('themeChanged', populate);
+  resize(); loop();
+})();
+
+/* Atom timer → see hourglass.js */
+
+/* ══════════════════════════════════════════════════════════
+   STICKY NOTES
+══════════════════════════════════════════════════════════ */
+(function() {
+  const container = document.getElementById('stickies-container');
+  const addBtn = document.getElementById('add-sticky');
+  if (!container || !addBtn) return;
+
+  const COLORS = [
+    { name: 'purple', value: '#7c3aed' },
+    { name: 'teal', value: '#14b8a6' },
+    { name: 'rose', value: '#db2777' },
+    { name: 'amber', value: '#d97706' },
+    { name: 'cyan', value: '#0ea5e9' }
+  ];
+
+  let stickies = Storage.get('stickies', []);
+
+  function genId() { return Date.now().toString(36) + Math.random().toString(36).substr(2); }
+
+  function formatTs(ts) {
+    const d = new Date(ts), now = new Date(), diff = now - d;
+    const min = Math.floor(diff / 60000), hrs = Math.floor(diff / 3600000), days = Math.floor(diff / 86400000);
+    if (min < 1) return 'just now';
+    if (min < 60) return `${min}m ago`;
+    if (hrs < 24) return `${hrs}h ago`;
+    if (days < 7) return `${days}d ago`;
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  }
+
+  function createEl(sticky) {
+    const div = document.createElement('div');
+    div.className = 'sticky'; div.dataset.id = sticky.id; div.dataset.color = sticky.color;
+    div.innerHTML = `
+      <div class="sticky-header">
+        <div class="sticky-colors">${COLORS.map(c => `<div class="sticky-color ${c.name === sticky.color ? 'active' : ''}" data-color="${c.name}" style="background:${c.value};" title="${c.name}"></div>`).join('')}</div>
+        <button class="sticky-delete" title="Delete">✕</button>
+      </div>
+      <textarea class="sticky-textarea" placeholder="Write your note...">${sticky.content}</textarea>
+      <div class="sticky-timestamp">${formatTs(sticky.updated)}</div>
+    `;
+    const ta = div.querySelector('.sticky-textarea');
+    ta.addEventListener('input', e => { sticky.content = e.target.value; sticky.updated = Date.now(); Storage.set('stickies', stickies); div.querySelector('.sticky-timestamp').textContent = formatTs(sticky.updated); ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; });
+    div.querySelector('.sticky-delete').addEventListener('click', () => { div.classList.add('vanishing'); setTimeout(() => { stickies = stickies.filter(s => s.id !== sticky.id); Storage.set('stickies', stickies); div.remove(); checkEmpty(); }, 400); });
+    div.querySelectorAll('.sticky-color').forEach(btn => btn.addEventListener('click', () => { sticky.color = btn.dataset.color; div.dataset.color = btn.dataset.color; div.querySelectorAll('.sticky-color').forEach(b => b.classList.remove('active')); btn.classList.add('active'); Storage.set('stickies', stickies); }));
+    setTimeout(() => { ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; }, 0);
+    return div;
+  }
+
+  function checkEmpty() {
+    if (stickies.length === 0 && !container.querySelector('.stickies-empty')) {
+      container.innerHTML = `<div class="stickies-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18v18h-9L3 12V3z"/></svg><p>No notes yet. Click the button above to create one!</p></div>`;
+    } else if (stickies.length > 0) {
+      const em = container.querySelector('.stickies-empty');
+      if (em) em.remove();
+    }
+  }
+
+  addBtn.addEventListener('click', () => {
+    const sticky = { id: genId(), content: '', color: COLORS[Math.floor(Math.random() * COLORS.length)].name, created: Date.now(), updated: Date.now() };
+    stickies.unshift(sticky); Storage.set('stickies', stickies);
+    const el = createEl(sticky); container.insertBefore(el, container.firstChild);
+    el.querySelector('.sticky-textarea').focus(); checkEmpty();
+  });
+
+  stickies.forEach(s => container.appendChild(createEl(s)));
+  checkEmpty();
+  setInterval(() => { stickies.forEach(s => { const el = container.querySelector(`[data-id="${s.id}"]`); if (el) el.querySelector('.sticky-timestamp').textContent = formatTs(s.updated); }); }, 30000);
+  window.Stickies = { reload: () => { container.innerHTML = ''; stickies.forEach(s => container.appendChild(createEl(s))); checkEmpty(); } };
+})();
+
+/* ══════════════════════════════════════════════════════════
+   AI CHATBOT — loaded from chatbot.js
+══════════════════════════════════════════════════════════ */
+
+/* ══════════════════════════════════════════════════════════
+   AI HERO ANIMATION — shown in empty chat state
+══════════════════════════════════════════════════════════ */
+(function() {
+  // Override renderEmpty in chatbot to show our cool hero
+  // We patch it after chatbot.js loads, but we set up the hero builder here
+  const PHYSICS_FORMULAS = [
+    'E = mc²', 'F = ma', 'v = u + at', 'ΔS ≥ 0',
+    '∇·E = ρ/ε₀', 'ΔxΔp ≥ ℏ/2', 'E = hν', 'F = -∇U',
+    'PV = nRT', 'ΔG = ΔH − TΔS', 'λ = h/p', '∮B·dl = μ₀I',
+    'sin²θ + cos²θ = 1', '∫₀^∞ e^−x² dx = √π/2', 'd/dx(xⁿ) = nxⁿ⁻¹',
+  ];
+
+  const JEE_PROMPTS = [
+    'Explain integration by parts',
+    'Laws of thermodynamics',
+    'Organic chemistry mechanisms',
+    'Electrostatics concepts',
+    'Differential equations tricks',
+    'Coordinate geometry tips',
+    'SHM and waves',
+    'Electrochemistry for JEE',
+  ];
+
+  window.buildChatHero = function(container, onPromptClick) {
+    container.innerHTML = '';
+
+    const hero = document.createElement('div');
+    hero.className = 'chat-hero';
+    hero.id = 'chat-hero';
+
+    // Floating symbols canvas
+    const canvas = document.createElement('canvas');
+    canvas.className = 'hero-symbols-canvas';
+    canvas.id = 'hero-canvas';
+    hero.appendChild(canvas);
+
+    // Orb
+    const orb = document.createElement('div');
+    orb.className = 'hero-orb';
+    orb.innerHTML = `
+      <div class="hero-orb-ring"></div>
+      <div class="hero-orb-ring"></div>
+      <div class="hero-orb-ring"></div>
+      <div class="hero-orbit"><div class="hero-orbit-dot"></div></div>
+      <div class="hero-orbit" style="transform:rotate(120deg)"><div class="hero-orbit-dot"></div></div>
+      <div class="hero-orbit" style="transform:rotate(240deg)"><div class="hero-orbit-dot"></div></div>
+      <div class="hero-orb-core">✦</div>
+    `;
+    hero.appendChild(orb);
+
+    // Text
+    const txt = document.createElement('div');
+    txt.className = 'hero-text';
+    txt.innerHTML = `
+      <div class="hero-title">What's on your mind?</div>
+      <div class="hero-subtitle">groq · llama-3.3-70b · vision · jee ready</div>
+    `;
+    hero.appendChild(txt);
+
+    // Suggestions
+    const suggRow = document.createElement('div');
+    suggRow.className = 'hero-suggestions';
+    const picks = JEE_PROMPTS.sort(() => Math.random() - 0.5).slice(0, 4);
+    picks.forEach(p => {
+      const btn = document.createElement('button');
+      btn.className = 'hero-suggestion';
+      btn.textContent = p;
+      btn.addEventListener('click', () => onPromptClick(p));
+      suggRow.appendChild(btn);
+    });
+    txt.appendChild(suggRow);
+
+    // Floating formulas
+    PHYSICS_FORMULAS.slice(0, 8).forEach((f, i) => {
+      const el = document.createElement('div');
+      el.className = 'hero-formula';
+      el.textContent = f;
+      el.style.cssText = `
+        left: ${10 + Math.random() * 75}%;
+        top: ${20 + Math.random() * 55}%;
+        animation-duration: ${6 + Math.random() * 8}s;
+        animation-delay: ${i * 1.2}s;
+      `;
+      hero.appendChild(el);
+    });
+
+    container.appendChild(hero);
+
+    // Animate the canvas with floating math symbols
+    startHeroCanvas(canvas);
+  };
+
+  function startHeroCanvas(canvas) {
+    const ctx = canvas.getContext('2d');
+    let W, H, items = [], tick = 0;
+    const SYMBOLS = ['∫','∑','π','θ','Δ','∂','√','±','≈','λ','ℏ','Ψ','∞','α','β','γ','∇','∮','⊕','⊗'];
+
+    function getAccentColor(varName, alpha) {
+      const hex = getComputedStyle(document.documentElement).getPropertyValue(varName).trim().replace('#','');
+      if (!hex || hex.length < 6) return `rgba(124,58,237,${alpha})`;
+      const n = parseInt(hex, 16);
+      return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${alpha})`;
+    }
+
+    function resize() {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      W = rect.width || 600; H = rect.height || 400;
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width  = W * dpr; canvas.height = H * dpr;
+      canvas.style.width  = W + 'px'; canvas.style.height = H + 'px';
+      ctx.scale(dpr, dpr);
+      populate();
+    }
+
+    function populate() {
+      items = [];
+      const n = Math.min(Math.floor((W * H) / 20000), 22);
+      for (let i = 0; i < n; i++) {
+        items.push({
+          x: Math.random() * W,
+          y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 0.15,
+          vy: (Math.random() - 0.5) * 0.12,
+          sym: SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)],
+          size: 10 + Math.random() * 16,
+          alpha: 0.08 + Math.random() * 0.18,
+          phase: Math.random() * Math.PI * 2,
+          pulse: 0.3 + Math.random() * 0.5,
+        });
+      }
+    }
+
+    function loop() {
+      if (!canvas.isConnected) return;
+      ctx.clearRect(0, 0, W, H);
+      tick += 0.006;
+      const col = getAccentColor('--a3', 1);
+      for (const it of items) {
+        it.x += it.vx; it.y += it.vy;
+        if (it.x < -40) it.x = W + 30; if (it.x > W + 40) it.x = -30;
+        if (it.y < -40) it.y = H + 30; if (it.y > H + 40) it.y = -30;
+        const a = it.alpha * (0.5 + 0.5 * Math.sin(tick * it.pulse + it.phase));
+        ctx.save();
+        ctx.globalAlpha = a;
+        ctx.font = `${it.size}px 'Fira Code',monospace`;
+        ctx.fillStyle = col;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.translate(it.x, it.y);
+        ctx.rotate(Math.sin(tick * 0.3 + it.phase) * 0.08);
+        ctx.fillText(it.sym, 0, 0);
+        ctx.restore();
+      }
+      requestAnimationFrame(loop);
+    }
+
+    const ro = new ResizeObserver(() => resize());
+    ro.observe(canvas.parentElement);
+    resize();
+    loop();
+  }
+})();
+
+
+/* ══════════════════════════════════════════════════════════
+   SETTINGS
+══════════════════════════════════════════════════════════ */
+(function() {
+  const overlay = document.getElementById('settings-overlay');
+  const closeBtn = document.getElementById('close-settings');
+  const settingsBtn = document.querySelector('.s-settings');
+  const apiKeysList = document.getElementById('api-keys-list');
+  const addKeyBtn = document.getElementById('add-api-key');
+
+  let currentTheme = Storage.get('theme', 'nexus');
+
+  function setTheme(t) {
+    document.body.dataset.theme = t; currentTheme = t; Storage.set('theme', t);
+    document.querySelectorAll('.theme-btn').forEach(b => b.classList.toggle('active', b.dataset.theme === t));
+    window.dispatchEvent(new CustomEvent('themeChanged'));
+  }
+
+  function renderApiKeys() {
+    if (!apiKeysList) return;
+    const keys = window.ChatBot ? window.ChatBot.keyManager.getAll() : [];
+    if (keys.length === 0) {
+      apiKeysList.innerHTML = `<div style="text-align:center;padding:1.5rem;color:var(--txt2);font-size:0.875rem;">No API keys configured. Add your Groq API key to enable AI chat.</div>`;
+      return;
+    }
+    apiKeysList.innerHTML = keys.map(k => `
+      <div class="api-key-item">
+        <input type="password" class="api-key-input" value="${k.key}" readonly placeholder="gsk_...">
+        <span class="api-key-status ${k.active ? 'active' : 'inactive'}">${k.active ? 'Active' : 'Inactive'}</span>
+        <button class="api-key-remove" data-key="${k.key}">✕</button>
+      </div>
+    `).join('');
+    apiKeysList.querySelectorAll('.api-key-remove').forEach(btn => btn.addEventListener('click', () => {
+      if (confirm('Remove this API key?')) { window.ChatBot.keyManager.removeKey(btn.dataset.key); renderApiKeys(); }
+    }));
+  }
+
+  function addApiKey() {
+    const key = prompt('Enter your Groq API key (starts with gsk_):');
+    if (!key) return;
+    if (!key.startsWith('gsk_')) { alert('Invalid key format. Groq keys start with "gsk_"'); return; }
+    if (window.ChatBot) { window.ChatBot.keyManager.addKey(key); renderApiKeys(); }
+  }
+
+  settingsBtn.addEventListener('click', () => { overlay.classList.add('open'); renderApiKeys(); });
+  closeBtn.addEventListener('click', () => overlay.classList.remove('open'));
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
+  document.querySelectorAll('.theme-btn').forEach(b => b.addEventListener('click', () => setTheme(b.dataset.theme)));
+  addKeyBtn?.addEventListener('click', addApiKey);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && overlay.classList.contains('open')) overlay.classList.remove('open');
+    if ((e.ctrlKey || e.metaKey) && e.key === ',') { e.preventDefault(); overlay.classList.add('open'); renderApiKeys(); }
+  });
+
+  setTheme(currentTheme);
+  window.Settings = { setTheme, renderApiKeys, addApiKey };
+})();
+
+/* ══════════════════════════════════════════════════════════
+   APP NAV
+══════════════════════════════════════════════════════════ */
+(function() {
+  const navItems = document.querySelectorAll('.nav-item');
+  const views = document.querySelectorAll('.view');
+  let currentView = window._startView || Storage.get('current-view', 'atom');
+
+  function switchView(name) {
+    navItems.forEach(i => i.classList.toggle('active', i.dataset.view === name));
+    views.forEach(v => v.classList.toggle('active', v.id === `${name}-view`));
+    currentView = name; Storage.set('current-view', name);
+    // Only auto-focus chat input on desktop (prevents keyboard pop-up on mobile)
+    if (name === 'ai-chat') {
+      const isMobile = window.matchMedia('(max-width: 768px)').matches || 'ontouchstart' in window;
+      if (!isMobile) {
+        setTimeout(() => document.getElementById('chat-input')?.focus(), 100);
+      }
+    }
+    // Fix atom canvas sizing when view becomes visible
+    if (name === 'atom') { requestAnimationFrame(() => window.AtomTimer?.resize()); }
+  }
+
+  navItems.forEach(i => i.addEventListener('click', () => { if (i.dataset.view) switchView(i.dataset.view); }));
+  document.addEventListener('keydown', e => {
+    if (e.altKey) {
+      if (e.key === '1') { e.preventDefault(); switchView('atom'); }
+      if (e.key === '2') { e.preventDefault(); switchView('stickies'); }
+      if (e.key === '3') { e.preventDefault(); switchView('ai-chat'); }
+      if (e.key === '4') { e.preventDefault(); switchView('resources'); }
+    }
+  });
+
+  switchView(currentView);
+  console.log('%cNexus AI', 'font-size:24px;font-weight:bold;color:#7c3aed;');
+  console.log('%cv1.0.0 — Atom Physics · Stickies · AI Chat', 'font-size:12px;color:#a78bfa;');
+
+  window.NexusApp = { switchView, version: '1.0.0' };
+})();
+/* ══════════════════════════════════════════════════════════
+   SPLASH SCREEN ANIMATION
+══════════════════════════════════════════════════════════ */
+(function() {
+  const splash = document.getElementById('splash');
+  const sc = document.getElementById('splash-canvas');
+  if (!sc) return;
+  const ctx = sc.getContext('2d');
+  const W = 220, H = 220, CX = W/2, CY = H/2;
+  const TAU = Math.PI * 2;
+
+  // Infinity path sampler — lemniscate of Bernoulli parametric
+  function infPoint(t) {
+    // Scaled to fit canvas nicely: loop radius ~70px
+    const scale = 72;
+    const denom = 1 + Math.sin(t) * Math.sin(t);
+    return {
+      x: CX + scale * Math.cos(t) / denom,
+      y: CY + scale * Math.sin(t) * Math.cos(t) / denom
+    };
+  }
+
+  // Sample full path for drawing
+  const PATH_STEPS = 300;
+  const pathPts = [];
+  for (let i = 0; i <= PATH_STEPS; i++) {
+    pathPts.push(infPoint((i / PATH_STEPS) * TAU));
+  }
+
+  let startTime = null;
+  const TOTAL_MS = 2600; // how long the full draw takes
+  let dotT = 0; // current parametric t for dot
+  let animDone = false;
+  let glowPhase = 0;
+
+  // Read accent colors from CSS variables (theme-aware)
+  function getC(v) { return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+
+  // Convert hex to rgb components for rgba() usage
+  function hexToRgb(hex) {
+    hex = hex.replace('#','');
+    if (hex.length === 3) hex = hex.split('').map(c=>c+c).join('');
+    const n = parseInt(hex,16);
+    return [(n>>16)&255,(n>>8)&255,n&255];
+  }
+
+  function ca(varName, alpha) {
+    const hex = getC(varName);
+    if (!hex || hex[0] !== '#') return `rgba(124,58,237,${alpha})`; // fallback
+    const [r,g,b] = hexToRgb(hex);
+    return `rgba(${r},${g},${b},${alpha})`;
+  }
+
+  function drawFrame(ts) {
+    if (!startTime) startTime = ts;
+    const elapsed = ts - startTime;
+    const progress = Math.min(elapsed / TOTAL_MS, 1);
+
+    ctx.clearRect(0, 0, W, H);
+
+    // ── Outer glow pulse ──
+    glowPhase += 0.04;
+    const glowAlpha = 0.12 + 0.08 * Math.sin(glowPhase);
+    const radGlow = ctx.createRadialGradient(CX, CY, 10, CX, CY, 110);
+    radGlow.addColorStop(0, ca('--a2', glowAlpha * 2));
+    radGlow.addColorStop(0.5, ca('--a1', glowAlpha));
+    radGlow.addColorStop(1, 'transparent');
+    ctx.fillStyle = radGlow;
+    ctx.fillRect(0, 0, W, H);
+
+    // ── Draw completed path so far ──
+    const drawUpTo = Math.floor(progress * PATH_STEPS);
+    if (drawUpTo > 1) {
+      for (let i = 1; i < drawUpTo; i++) {
+        const t = i / drawUpTo;
+        ctx.beginPath();
+        ctx.moveTo(pathPts[i-1].x, pathPts[i-1].y);
+        ctx.lineTo(pathPts[i].x, pathPts[i].y);
+        ctx.strokeStyle = ca('--a3', 0.08 + t * 0.15);
+        ctx.lineWidth = 6; ctx.stroke();
+        ctx.strokeStyle = ca('--a2', 0.3 + t * 0.5);
+        ctx.lineWidth = 2.5; ctx.stroke();
+        ctx.strokeStyle = ca('--a4', t * 0.6);
+        ctx.lineWidth = 1; ctx.stroke();
+      }
+    }
+
+    // ── Travelling dot ──
+    dotT = progress * TAU;
+    const dot = infPoint(dotT);
+
+    const dotGrad = ctx.createRadialGradient(dot.x, dot.y, 0, dot.x, dot.y, 18);
+    dotGrad.addColorStop(0, ca('--a4', 0.9));
+    dotGrad.addColorStop(0.3, ca('--a3', 0.6));
+    dotGrad.addColorStop(0.7, ca('--a2', 0.2));
+    dotGrad.addColorStop(1, 'transparent');
+    ctx.fillStyle = dotGrad;
+    ctx.beginPath(); ctx.arc(dot.x, dot.y, 18, 0, TAU); ctx.fill();
+
+    ctx.beginPath(); ctx.arc(dot.x, dot.y, 5, 0, TAU);
+    ctx.fillStyle = '#fff'; ctx.fill();
+    ctx.beginPath(); ctx.arc(dot.x, dot.y, 3.5, 0, TAU);
+    ctx.fillStyle = getC('--a3') || '#a78bfa'; ctx.fill();
+
+    // ── Center sparkle when done ──
+    if (progress > 0.95) {
+      const fade = (progress - 0.95) / 0.05;
+      const cg = ctx.createRadialGradient(CX, CY, 0, CX, CY, 8);
+      cg.addColorStop(0, `rgba(255,255,255,${fade * 0.9})`);
+      cg.addColorStop(1, 'transparent');
+      ctx.fillStyle = cg;
+      ctx.beginPath(); ctx.arc(CX, CY, 6 * fade, 0, TAU); ctx.fill();
+    }
+
+    if (progress < 1 || !animDone) {
+      if (progress >= 1) animDone = true;
+      requestAnimationFrame(drawFrame);
+    } else {
+      requestAnimationFrame(idleGlow);
+    }
+  }
+
+  function idleGlow() {
+    ctx.clearRect(0, 0, W, H);
+    glowPhase += 0.03;
+
+    const gA = 0.1 + 0.06 * Math.sin(glowPhase);
+    const radGlow = ctx.createRadialGradient(CX, CY, 10, CX, CY, 110);
+    radGlow.addColorStop(0, ca('--a2', gA * 2));
+    radGlow.addColorStop(0.5, ca('--a1', gA));
+    radGlow.addColorStop(1, 'transparent');
+    ctx.fillStyle = radGlow;
+    ctx.fillRect(0, 0, W, H);
+
+    for (let i = 1; i <= PATH_STEPS; i++) {
+      const t = i / PATH_STEPS;
+      ctx.beginPath();
+      ctx.moveTo(pathPts[i-1].x, pathPts[i-1].y);
+      ctx.lineTo(pathPts[i].x, pathPts[i].y);
+      ctx.strokeStyle = ca('--a3', 0.18 + 0.06 * Math.sin(glowPhase + t * 4));
+      ctx.lineWidth = 4; ctx.stroke();
+      ctx.strokeStyle = ca('--a2', 0.55 + 0.15 * Math.sin(glowPhase + t * 4));
+      ctx.lineWidth = 2; ctx.stroke();
+    }
+  }
+
+  // Start animation
+  requestAnimationFrame(drawFrame);
+
+  // Dismiss splash after load completes (animation + small buffer)
+  const SPLASH_DURATION = 3400;
+  setTimeout(() => {
+    splash.classList.add('hide');
+    setTimeout(() => { splash.style.display = 'none'; }, 700);
+  }, SPLASH_DURATION);
+})();
+
+/* ══════════════════════════════════════════════════════════
+   SERVICE WORKER + PWA
+══════════════════════════════════════════════════════════ */
+(function() {
+  // SW only works when deployed with sw.js in the same directory.
+  // Silently skipped in preview environments (e.g. claudeusercontent.com).
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', async () => {
+      // First check if sw.js actually exists before trying to register
+      try {
+        const probe = await fetch('./sw.js', { method: 'HEAD' });
+        if (!probe.ok) {
+          console.info('[Nexus] sw.js not found — SW skipped (preview mode). Deploy with sw.js for offline support.');
+          return;
+        }
+      } catch {
+        console.info('[Nexus] SW skipped — network check failed.');
+        return;
+      }
+
+      navigator.serviceWorker.register('./sw.js', { scope: './' })
+        .then(reg => {
+          console.log('[Nexus] SW registered ✓', reg.scope);
+          reg.addEventListener('updatefound', () => {
+            const nw = reg.installing;
+            nw?.addEventListener('statechange', () => {
+              if (nw.state === 'installed' && navigator.serviceWorker.controller) {
+                console.log('[Nexus] Update ready — refresh to apply.');
+              }
+            });
+          });
+        })
+        .catch(e => console.info('[Nexus] SW not registered:', e.message));
+    });
+  }
+
+  // PWA install prompt
+  let deferredPrompt = null;
+  const banner = document.getElementById('pwa-banner');
+  const installBtn = document.getElementById('pwa-install-btn');
+  const dismissBtn = document.getElementById('pwa-dismiss-btn');
+
+  // Show banner only once per session and if not already installed
+  const dismissed = sessionStorage.getItem('pwa-dismissed');
+
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (!dismissed) {
+      setTimeout(() => banner?.classList.add('show'), 4000); // after splash
+    }
+  });
+
+  installBtn?.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') console.log('[Nexus] PWA installed');
+    deferredPrompt = null;
+    banner?.classList.remove('show');
+  });
+
+  dismissBtn?.addEventListener('click', () => {
+    banner?.classList.remove('show');
+    sessionStorage.setItem('pwa-dismissed', '1');
+  });
+
+  window.addEventListener('appinstalled', () => {
+    banner?.classList.remove('show');
+    deferredPrompt = null;
+    console.log('[Nexus] App installed');
+  });
+})();
+
+</script>
+
+<!-- Atom Physics Timer (separate file) -->
+<script src="hourglass.js"></script>
+<!-- AI Chatbot (separate file for performance) -->
+<script src="chatbot.js"></script>
+</body>
+</html>
