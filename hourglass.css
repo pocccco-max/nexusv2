@@ -1,0 +1,290 @@
+/* ══════════════════════════════════════════════════════════
+   ATOM TIMER STYLES — hourglass.css
+   Nexus AI v1.0.0
+   Separated for modularity — import after main.css
+══════════════════════════════════════════════════════════ */
+
+/* ── Atom View Container ── */
+.atom-view-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+/* ── Canvas ── */
+#atom-canvas {
+  display: block;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  filter: drop-shadow(0 0 40px var(--glow));
+  transition: filter 0.3s;
+}
+
+/* ── Timer Display ── */
+.atom-timer-display {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(3rem, 10vw, 6rem);
+  font-weight: 300;
+  /* Force strong contrast across all themes */
+  color: var(--txt0);
+  letter-spacing: 0.04em;
+  text-shadow:
+    0 0 40px var(--glow),
+    0 0 80px var(--glow2),
+    0 2px 4px rgba(0,0,0,0.4);
+  text-align: center;
+  line-height: 1;
+  /* Extra contrast boost for light/paper theme */
+  -webkit-text-stroke: 0;
+}
+
+/* Paper theme needs darker timer text */
+[data-theme="paper"] .atom-timer-display {
+  color: #111111;
+  text-shadow: none;
+}
+
+/* Obsidian needs pure white */
+[data-theme="obsidian"] .atom-timer-display {
+  color: #ffffff;
+  text-shadow: 0 0 20px rgba(255,255,255,0.2);
+}
+
+.atom-timer-label {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  color: var(--a3);
+  text-transform: uppercase;
+  text-align: center;
+  margin-top: 0.25rem;
+  opacity: 0.9;
+}
+
+/* ── Controls ── */
+.atom-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.atom-btn {
+  background: var(--bg2);
+  border: 1px solid var(--bdr2);
+  color: var(--txt0);
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  text-transform: lowercase;
+  letter-spacing: 0.08em;
+}
+
+.atom-btn:hover:not(:disabled) {
+  background: var(--bg3);
+  border-color: var(--a2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px var(--glow);
+}
+
+.atom-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.atom-btn.primary {
+  background: var(--a1);
+  border-color: var(--a2);
+  color: #fff;
+}
+
+.atom-btn.primary:hover:not(:disabled) {
+  background: var(--a2);
+}
+
+/* Paper theme buttons need dark text */
+[data-theme="paper"] .atom-btn {
+  color: var(--txt0);
+  border-color: var(--bdr2);
+}
+
+[data-theme="paper"] .atom-btn.primary {
+  color: #ffffff;
+}
+
+/* ── Finished Indicator ── */
+.atom-finished {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  color: var(--ok);
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity 0.5s;
+  text-shadow: 0 0 12px var(--ok);
+}
+
+.atom-finished.show {
+  opacity: 1;
+}
+
+/* ── Duration Panel ── */
+.atom-duration-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.875rem;
+  width: 100%;
+  max-width: 520px;
+}
+
+/* ── Presets ── */
+.atom-presets {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.atom-preset {
+  background: var(--bg2);
+  border: 1px solid var(--bdr2);
+  color: var(--txt1);
+  padding: 0.45rem 0.9rem;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  transition: all 0.2s;
+}
+
+.atom-preset:hover {
+  background: var(--bg3);
+  border-color: var(--a2);
+  color: var(--a3);
+  transform: translateY(-1px);
+}
+
+.atom-preset.active {
+  background: var(--a1);
+  border-color: var(--a2);
+  color: #fff;
+  box-shadow: 0 2px 12px var(--glow);
+}
+
+[data-theme="paper"] .atom-preset {
+  color: var(--txt1);
+}
+
+[data-theme="paper"] .atom-preset.active {
+  color: #fff;
+}
+
+/* ── Custom Time Input ── */
+.atom-custom-row {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  background: var(--bg2);
+  border: 1px solid var(--bdr2);
+  border-radius: 14px;
+  padding: 0.5rem 0.875rem;
+  transition: border-color 0.2s;
+}
+
+.atom-custom-row:focus-within {
+  border-color: var(--a2);
+  box-shadow: 0 0 0 2px var(--glow);
+}
+
+.atom-custom-row label {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.7rem;
+  color: var(--txt2);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.atom-custom-row input {
+  background: transparent;
+  border: none;
+  color: var(--txt0);
+  font-family: 'Fraunces', serif;
+  font-size: 1.1rem;
+  font-weight: 300;
+  width: 44px;
+  text-align: center;
+  outline: none;
+  padding: 0.125rem 0;
+}
+
+[data-theme="paper"] .atom-custom-row input {
+  color: #111111;
+}
+
+.atom-custom-row input::-webkit-inner-spin-button,
+.atom-custom-row input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+.atom-custom-row input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.atom-custom-sep {
+  font-family: 'Fira Code', monospace;
+  color: var(--a3);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* ── Atom Logo (sidebar) - Visibility Fix ── */
+/* Make the atom nav icon clearly visible across ALL themes */
+.nav-item[data-view="atom"] {
+  color: var(--txt1);
+}
+
+.nav-item[data-view="atom"].active {
+  color: #ffffff;
+}
+
+/* Force the atom SVG orbits to be visible */
+.nav-item svg ellipse,
+.nav-item svg circle {
+  transition: stroke 0.25s, fill 0.25s;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .atom-view-container { gap: 1.25rem; }
+  .atom-timer-display  { font-size: clamp(2.5rem, 12vw, 4rem); }
+  .atom-timer-label    { font-size: 0.65rem; letter-spacing: 0.2em; }
+  .atom-btn            { padding: 0.625rem 1.125rem; font-size: 0.75rem; }
+  .atom-preset         { font-size: 0.65rem; padding: 0.375rem 0.7rem; }
+}
+
+@media (max-width: 480px) {
+  .atom-view-container { gap: 1rem; }
+  .atom-timer-display  { font-size: clamp(2rem, 14vw, 3.5rem); }
+  .atom-btn            { padding: 0.55rem 0.9rem; font-size: 0.7rem; border-radius: 10px; }
+  .atom-duration-panel { gap: 0.625rem; }
+  .atom-custom-row     { padding: 0.375rem 0.625rem; border-radius: 10px; }
+}
+
+@media (max-width: 360px) {
+  .atom-controls  { flex-wrap: wrap; }
+  .atom-btn       { font-size: 0.65rem; padding: 0.55rem 0.75rem; }
+  .atom-preset    { font-size: 0.55rem; padding: 0.3rem 0.5rem; }
+  .atom-timer-display { font-size: clamp(1.75rem, 14vw, 3rem); }
+}
